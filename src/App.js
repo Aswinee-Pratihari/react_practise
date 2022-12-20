@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import AddItem from './AddItem';
 import './App.css';
 import Content from './Content';
 import Footer from './Footer';
@@ -7,44 +8,55 @@ import Header from './Header';
 
 function App() {
  
-  const[items,setItems]=useState([
-    {
-        id:1,
-        checked:false,
-        item:"Item1"
-    },
-    {
-        id:2,
-        checked:true,
-        item:"Item2"
-    },
-    {   id:3,
-        checked:false,
-        item:"Item3"
+  const[items,setItems]=useState(
+    JSON.parse(localStorage.getItem('list'))
+) 
 
-    }
-]) 
+const [newItem,setNewItem]=useState('');
+
+const setandSaveItems=(listItems)=>{
+    setItems(listItems)
+    localStorage.setItem('list',JSON.stringify(listItems))
+}
+const additem=(item)=>{
+const id=items.length ?items[items.length-1].id+1:1
+const mynewItem={id,checked:false,item};
+const listItems=[...items,mynewItem];
+setandSaveItems(listItems)
+}
+
 
 const handleCheck=(id)=>{
     // setItems(!items)
     // alert(`${id}`)
     console.log(`${id}`)
     const listItems=items.map((item)=>item.id===id?{...item,checked:!item.checked}:item)
-    setItems(listItems)
-    localStorage.setItem('list',JSON.stringify(listItems))
+    setandSaveItems(listItems)
 }
 
 const handleDelete=(id)=>{
 console.log(id)
 const listItems=items.filter((item)=>item.id!==id);
-setItems(listItems)  //this will delete a item if its id matches to given id
-    localStorage.setItem('list',JSON.stringify(listItems))
+setandSaveItems(listItems)
 }
 
+
+const handleSubmit=(e)=>{
+console.log('submitted')
+e.preventDefault()
+if (!newItem) return;
+console.log(newItem)
+setNewItem('')
+additem(newItem)
+}
 
   return (
  <div className='App'>
  <Header title='Groceries'/>
+ <AddItem
+ handleSubmit={handleSubmit}
+ newItem={newItem}
+ setNewItem={setNewItem}/>
  {/* <Header/> */}
  <Content  
  items={items}
