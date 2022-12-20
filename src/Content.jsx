@@ -1,50 +1,63 @@
 import { useState } from "react";
-
+import {FaTrashAlt} from 'react-icons/fa'
 const Content = () => {
-    const[name,setName]=useState('Aswinee') //array destructuring in usestate
-    const [count,setCount]=useState(0)
-    const handleNameChange = () => {
-        const names = ['Aswinee', 'Kumar', 'Pratihari'];
-        const int = Math.floor(Math.random() * 3);
-        // return names[int];
-        setName(names[int])
+    const[items,setItems]=useState([
+        {
+            id:1,
+            checked:false,
+            item:"Item1"
+        },
+        {
+            id:2,
+            checked:true,
+            item:"Item2"
+        },
+        {   id:3,
+            checked:false,
+            item:"Item3"
+
+        }
+    ]) 
+ 
+    const handleCheck=(id)=>{
+        // setItems(!items)
+        // alert(`${id}`)
+        console.log(`${id}`)
+        const listItems=items.map((item)=>item.id===id?{...item,checked:!item.checked}:item)
+        setItems(listItems)
+        localStorage.setItem('list',JSON.stringify(listItems))
     }
 
-
-    const handleClick=()=>{
-        console.log('you clicked it')
-        alert('you clicked it')
+    const handleDelete=(id)=>{
+console.log(id)
+const listItems=items.filter((item)=>item.id!==id);
+setItems(listItems)  //this will delete a item if its id matches to given id
+        localStorage.setItem('list',JSON.stringify(listItems))
     }
-    const handleClick2=()=>{
-        // console.log('you clicked it')
-        alert(`${name} clicked it`)
-    }
-    const handleClick3=(e)=>{
-        
-        console.log(e.target)
-    }
-
-    const Increament=()=>{
-        
-        setCount(count+1)
-    }
-    const Decreament=()=>{
-        
-        setCount(count-1)
-    }
+   
     return (
         <main>
-            <p onDoubleClick={handleClick}>
-                Hello {name}!
-            </p>
-            <button onClick={handleClick}>Click Me</button>
-            <button onClick={()=>handleClick2(handleNameChange())}>Get your name</button>
-            <button onClick={(e)=>handleClick3(e)}>Get the event object</button>
-
-
-            <button onClick={Increament}>Count+</button>
-            <span>{count}</span>
-            <button onClick={Decreament}>Count-</button>
+            {items.length?(
+            <ul>
+                {items.map((item)=>(
+                    <li className="item" key={item.id}>
+                        <input type="checkbox"
+                        onChange={()=>handleCheck(item.id)}
+                        checked={item.checked}
+                       />
+                         <label
+                         style={(item.checked)?{textDecoration:'line-through'}:null}
+                         onDoubleClick={()=>handleCheck(item.id)}
+                         >
+                            {item.item}
+                         </label>
+                         <FaTrashAlt role="button" tabIndex="0" 
+                         onClick={()=>handleDelete(item.id)}/>
+                    </li>
+                ))}
+            </ul>
+            ):(<h1>The list is empty</h1>)}
+           
         </main>
     )
 }
