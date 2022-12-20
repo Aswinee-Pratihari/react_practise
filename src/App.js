@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddItem from './AddItem';
 import './App.css';
 import Content from './Content';
@@ -9,21 +9,23 @@ import SearchItem from './SearchItem';
 
 function App() {
  
-  const[items,setItems]=useState(
-    JSON.parse(localStorage.getItem('list'))
-) 
+  const[items,setItems]=useState(JSON.parse(localStorage.getItem('list'))||[])  //these brackers are nessecary to keep the localstorage running
+useEffect(()=>{
+  localStorage.setItem('list',JSON.stringify(items))
+},[items])
 
 const [newItem,setNewItem]=useState('');
 const[search,setSearch]=useState('')
-const setandSaveItems=(listItems)=>{
-    setItems(listItems)
-    localStorage.setItem('list',JSON.stringify(listItems))
-}
+// const setandSaveItems=(listItems)=>{
+//     setItems(listItems)
+  
+// }
 const additem=(item)=>{
 const id=items.length ?items[items.length-1].id+1:1
 const mynewItem={id,checked:false,item};
 const listItems=[...items,mynewItem];
-setandSaveItems(listItems)
+// setandSaveItems(listItems)
+setItems(listItems)
 }
 
 
@@ -32,13 +34,15 @@ const handleCheck=(id)=>{
     // alert(`${id}`)
     console.log(`${id}`)
     const listItems=items.map((item)=>item.id===id?{...item,checked:!item.checked}:item)
-    setandSaveItems(listItems)
+    // setandSaveItems(listItems)
+    setItems(listItems)
 }
 
 const handleDelete=(id)=>{
 console.log(id)
 const listItems=items.filter((item)=>item.id!==id);
-setandSaveItems(listItems)
+// setandSaveItems(listItems)
+setItems(listItems)
 }
 
 
