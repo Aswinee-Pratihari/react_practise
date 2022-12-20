@@ -5,6 +5,7 @@ import './App.css';
 import Content from './Content';
 import Footer from './Footer';
 import Header from './Header';
+import SearchItem from './SearchItem';
 
 function App() {
  
@@ -13,7 +14,7 @@ function App() {
 ) 
 
 const [newItem,setNewItem]=useState('');
-
+const[search,setSearch]=useState('')
 const setandSaveItems=(listItems)=>{
     setItems(listItems)
     localStorage.setItem('list',JSON.stringify(listItems))
@@ -57,12 +58,24 @@ additem(newItem)
  handleSubmit={handleSubmit}
  newItem={newItem}
  setNewItem={setNewItem}/>
+
+
+
  {/* <Header/> */}
+ <SearchItem
+ search={search}
+ setSearch={setSearch}/>
+
+
+
  <Content  
- items={items}
+ items={items.filter(item=>((item.item).toLowerCase().includes(search.toLowerCase())))}
  setItems={setItems}
  handleCheck={handleCheck}
  handleDelete={handleDelete}/>
+
+
+
  <Footer length={items.length}/>
  </div>
   );
